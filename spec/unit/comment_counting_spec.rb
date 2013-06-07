@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe "CommentSection analysis" do 
 
    describe "comment_count" do 

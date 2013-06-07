@@ -1,3 +1,5 @@
+require 'spec_helper'
+
  describe "content analysis" do 
       before do 
          @simple_content = "<section id='main'><div><p>Hello world!</p><p>The quick brown fox jumps over the dog -- so it goes.</p></div></section>"
@@ -45,4 +47,3 @@
 
    end
 
-   
