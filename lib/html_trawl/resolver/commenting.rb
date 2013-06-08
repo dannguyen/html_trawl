@@ -1,8 +1,4 @@
 module HtmlTrawl
-	module Resolver
-		module Commenting
-
-
-		end
+	class CommentResolver < Resolver
 	end
 end

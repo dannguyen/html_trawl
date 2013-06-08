@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+describe "article resolution", skip: true do 
+
+
  describe "content analysis", skip: true do 
       before do 
          @simple_content = "<section id='main'><div><p>Hello world!</p><p>The quick brown fox jumps over the dog -- so it goes.</p></div></section>"
@@ -45,4 +48,7 @@ require 'spec_helper'
       end
 
    end
+
+end
+
 
