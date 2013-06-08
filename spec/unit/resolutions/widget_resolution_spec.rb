@@ -1,20 +1,20 @@
 require 'spec_helper'
 
 
-describe "Look for widget HTML to determine accounts", skip: true do 
+describe "Look for widget HTML to determine accounts" do 
 
 
   it "should locate twitter accounts" do 
          @resolver = WidgetResolver.new PageFixtures.load('posts/danwin-mid.html')
-
-         expect( detect_twitter_accounts(@page).first).to eq ['dancow', 'twitter-follow-button']
+         expect( @resolver.twitter_accounts.first).to eq ['dancow', 'twitter-follow-button']
    end
 
    describe "Twitter finder", skip: true do 
     
       it "should NOT pick up twitter.com/share" do 
          bad_content = %Q{<html><body><a href="http://twitter.com/share" class="twitter-follow-button"></a></body></html>}
-         expect( detect_twitter_accounts(bad_content) ).to be_empty
+         @resolver = WidgetResolver.new bad_content 
+         expect( resolver.twitter_accounts ).to be_empty
       end
 
       describe "priority finding" do 

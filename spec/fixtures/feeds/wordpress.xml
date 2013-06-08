@@ -1,0 +1,54 @@
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:slash="http://purl.org/rss/1.0/modules/slash/" xmlns:georss="http://www.georss.org/georss" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:media="http://search.yahoo.com/mrss/" version="2.0">
+<channel>
+<title>WordPress.com Example Blog</title>
+<atom:link href="http://example.wordpress.com/feed/" rel="self" type="application/rss+xml"/>
+<link>http://example.wordpress.com</link>
+<description>Just another WordPress.com weblog</description>
+<lastBuildDate>Tue, 11 Jan 2011 18:23:28 +0000</lastBuildDate>
+<language>en</language>
+<sy:updatePeriod>hourly</sy:updatePeriod>
+<sy:updateFrequency>1</sy:updateFrequency>
+<generator>http://wordpress.com/</generator>
+<cloud domain="example.wordpress.com" port="80" path="/?rsscloud=notify" registerProcedure="" protocol="http-post"/>
+<image>
+<url>http://s2.wp.com/i/buttonw-com.png</url>
+<title>WordPress.com Example Blog</title>
+<link>http://example.wordpress.com</link>
+</image>
+<atom:link rel="search" type="application/opensearchdescription+xml" href="http://example.wordpress.com/osd.xml" title="WordPress.com Example Blog"/>
+<atom:link rel="hub" href="http://example.wordpress.com/?pushpress=hub"/>
+<item>
+<title>Hello world!</title>
+<link>
+http://example.wordpress.com/2008/02/19/hello-world/
+</link>
+<comments>
+http://example.wordpress.com/2008/02/19/hello-world/#comments
+</comments>
+<pubDate>Tue, 19 Feb 2008 18:24:39 +0000</pubDate>
+<dc:creator>a8cuser</dc:creator>
+<category>
+<![CDATA[ Uncategorized ]]>
+</category>
+<guid isPermaLink="false"/>
+<description>
+<![CDATA[
+Welcome to WordPress.com. This is your first post. Edit or delete it and start blogging!<img alt="" border="0" src="http://stats.wordpress.com/b.gif?host=example.wordpress.com&#038;blog=2916284&#038;post=1&#038;subd=example&#038;ref=&#038;feed=1" width="1" height="1" />
+]]>
+</description>
+<content:encoded>
+<![CDATA[
+<p>Welcome to <a href="http://wordpress.com/">WordPress.com</a>. This is your first post. Edit or delete it and start blogging!</p> <br /><img alt="" border="0" src="http://feeds.wordpress.com/1.0/categories/example.wordpress.com/1/" /> <img alt="" border="0" src="http://feeds.wordpress.com/1.0/tags/example.wordpress.com/1/" /> <a rel="nofollow" href="http://feeds.wordpress.com/1.0/gocomments/example.wordpress.com/1/"><img alt="" border="0" src="http://feeds.wordpress.com/1.0/comments/example.wordpress.com/1/" /></a> <img alt="" border="0" src="http://stats.wordpress.com/b.gif?host=example.wordpress.com&#038;blog=2916284&#038;post=1&#038;subd=example&#038;ref=&#038;feed=1" width="1" height="1" />
+]]>
+</content:encoded>
+<wfw:commentRss>
+http://example.wordpress.com/2008/02/19/hello-world/feed/
+</wfw:commentRss>
+<slash:comments>1</slash:comments>
+<media:content url="http://1.gravatar.com/avatar/a64c4a50f3f38f02cd27a9bfb3f11b62?s=96&d=identicon&r=G" medium="image">
+<media:title type="html">a8cuser</media:title>
+</media:content>
+</item>
+</channel>
+</rss>

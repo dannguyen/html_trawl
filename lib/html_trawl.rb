@@ -1,4 +1,5 @@
 require "html_trawl/version"
+require 'andand'
 
 module HtmlTrawl
   # Your code goes here...
