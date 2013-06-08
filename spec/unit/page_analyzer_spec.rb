@@ -16,7 +16,6 @@ describe "PageAnalyzer" do
             )
 
 
-
          @node_content = %q{<section id='main'>
          <div><p>Hello world!</p><p>The quick brown fox <a href="http://example.com">jumps</a> over the dog -- so it <a href="http://google.com">goes</a>.</p>
 <p><a href="/goes/to/path"><img src="http://example.com/some.gif"></a></p>
