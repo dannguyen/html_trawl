@@ -26,8 +26,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', "~>2.8"
 
 
+
   spec.add_dependency "mechanize"
   spec.add_dependency "nokogiri"
+  spec.add_dependency "pismo"
+  spec.add_dependency "ruby-readability"
 
 
 end

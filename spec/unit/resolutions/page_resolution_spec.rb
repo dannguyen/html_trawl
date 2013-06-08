@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe "Should detect the page type" do 
+describe "Should detect the page type", skip: true do 
 
    context "Homepage" do 
    end

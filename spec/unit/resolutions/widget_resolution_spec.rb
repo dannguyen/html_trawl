@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-include HtmlTrawl::Resolver::Widgets
 
 describe "Look for widget HTML to determine accounts" do 
+include HtmlTrawl::Resolver::Widgets
 
 
    describe "Twitter finder" do 
@@ -13,7 +13,7 @@ describe "Look for widget HTML to determine accounts" do
 
       it "should NOT pick up twitter.com/share" do 
          bad_content = %Q{<html><body><a href="http://twitter.com/share" class="twitter-follow-button"></a></body></html>}
-         expect( detect_twitter_accounts(bad_content).to be_empty
+         expect( detect_twitter_accounts(bad_content) ).to be_empty
       end
 
       describe "priority finding" do 

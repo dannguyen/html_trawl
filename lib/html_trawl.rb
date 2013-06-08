@@ -5,3 +5,5 @@ module HtmlTrawl
 end
 
 
+require 'html_trawl/resolver'
+

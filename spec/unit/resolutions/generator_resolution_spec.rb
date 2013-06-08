@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe "Should detect the content generator" do 
+describe "Should detect the content generator", skip: true do 
 
    context "WordPress" do 
    end

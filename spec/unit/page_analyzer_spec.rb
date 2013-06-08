@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 
-describe "PageAnalyzer" do 
+describe "PageAnalyzer", skip: true do 
 
   
   

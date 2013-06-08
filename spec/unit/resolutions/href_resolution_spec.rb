@@ -1,6 +1,6 @@
 require 'spec_helper'
 
- describe "affix to relative url" do 
+ describe "affix to relative url", skip: true do 
 
       before do 
          @url = "http://example.com"
