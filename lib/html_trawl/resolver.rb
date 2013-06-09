@@ -21,9 +21,6 @@ module HtmlTrawl
 	      end  
 	   end
 
-
-
-
 	end
 end
 
