@@ -4,7 +4,7 @@ module HtmlTrawl
 	class Resolver
 
 		attr_reader :parsed_html
-		
+
 		def initialize(htmlnode)
 			@parsed_html = parse_content(htmlnode)
 		end
@@ -12,7 +12,6 @@ module HtmlTrawl
 
 		# return Nokogiri wrapper
 	   def parse_content(ct)   
-
 	      if ct.is_a? Nokogiri::XML::NodeSet
 	         return Nokogiri::HTML( ct.to_html )
 	      elsif ct.is_a?(Nokogiri::XML::Node) 
