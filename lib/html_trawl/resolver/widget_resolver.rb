@@ -10,6 +10,10 @@ module HtmlTrawl
       	profile: /https?:\/\/(?:www\.)?facebook\.com\/([^\/]+)\/?$/
       }
 
+      INSTAGRAM_URL_REGEXES = {
+      	profile: /https?:\/\/(?:www\.)?instagram\.com\/([^\/]+)\/?$/
+      }
+
       FACEBOOK_PATTERNS = [
       	[ 
       		:href,       		

@@ -1,9 +1,8 @@
 require 'spec_helper'
 
-describe "article resolution", skip: true do 
+describe ArticleResolver do
 
-
- describe "content analysis", skip: true do 
+ context "content analysis"  do 
       before do 
          @simple_content = "<section id='main'><div><p>Hello world!</p><p>The quick brown fox jumps over the dog -- so it goes.</p></div></section>"
          @simple_html = %Q{
@@ -12,20 +11,20 @@ describe "article resolution", skip: true do
             </body></html>
          }
 
-         @analyzer =  PageAnalyzer.new @simple_html
+         @resolver =  ArticleResolver.new @simple_html
       end
 
       it "should extract main article into content" do 
          #  ugly gsubs are needed because
          #  Sanitize.clean converts block tags to newlines
-         Sanitize.clean(@analyzer.content).gsub(/\s+/, ' ').strip.must_equal "Hello world! The quick brown fox jumps over the dog -- so it goes."
-         @analyzer.content_text.gsub(/\s+/, ' ').must_equal Sanitize.clean(@simple_content).gsub(/\s+/, ' ').strip 
+         expect( Sanitize.clean(@resolver.content).gsub(/\s+/, ' ').strip).to eq "Hello world! The quick brown fox jumps over the dog -- so it goes."
+         expect( @resolver.content_text.gsub(/\s+/, ' ')).to eq Sanitize.clean(@simple_content).gsub(/\s+/, ' ').strip 
       end
 
 
       it "should count number of words" do 
-         @analyzer.content_words.must_equal %w(Hello world The quick brown fox jumps over the dog so it goes)
-         @analyzer.content_word_count.must_equal 13
+         expect( @resolver.content_words).to eq %w(Hello world The quick brown fox jumps over the dog so it goes)
+         expect( @resolver.content_word_count).to eq 13
       end
 
    end
@@ -35,20 +34,19 @@ describe "article resolution", skip: true do
 
       before do 
          @blog_post ||= PageFixtures.load('posts/danwin-mid.html')
-         @analyzer =  PageAnalyzer.new @blog_post
+         @resolver =  ArticleResolver.new @blog_post
       end
 
 
       it "should have published_timestamp" do 
-         @analyzer.content_published_timestamp.strftime("%Y-%m-%d").must_equal '2013-03-22'
+         expect( @resolver.content_published_timestamp.strftime("%Y-%m-%d")).to eq '2013-03-22'
       end
 
       it "should have title based off of headline" do 
-         @analyzer.content_title.must_equal 'The Google death and resurrection of Amy Wilentz'
+         expect( @resolver.content_title).to eq 'The Google death and resurrection of Amy Wilentz'
       end
 
    end
-
 end
 
 
