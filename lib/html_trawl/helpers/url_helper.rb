@@ -3,7 +3,6 @@ module HtmlTrawl
    module Helpers
       module URL 
 
-
          # returns string
          # returns nil if InvalidURI for either things
          def normalize_url(org_uri, refu)
