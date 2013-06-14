@@ -1,22 +1,23 @@
-
 module HtmlTrawl
    class GeneratorResolver < Resolver
 
-=begin
-      def get_site_types_with(foo_test, foo_sym)
-         SITE_TESTS[foo_test].inject({}){ |hsh, (k,v)| hsh[k] = v[foo_sym] if v[foo_sym]; hsh }
+
+
+      def likely_cms 
+         count_hsh = gather_cmses
+         if count_hsh.empty?
+            return nil
+         else
+            return count_hsh.sort_by{|k,v| v}[-1][0]
+         end       
       end
-
-
 
       # https://github.com/nqbao/chromesniffer/blob/master/detector.js
       SITE_TESTS = {
-
          body: {
             'Drupal' => ->( noko_content ){ noko_content.css("node TODO") }
 
             },
-
 
          string: {
             'AlphaCMS' => { generator: /alphacms\s+(.*)/i },
@@ -71,7 +72,6 @@ module HtmlTrawl
 
 
 
-
    # returns a hash, with each key referring to an attribute, and the value referring to the archetype of that attribute
    #
    # e.g. 
@@ -82,10 +82,9 @@ module HtmlTrawl
    #      generator: 'WordPress'
    #   }
    #
-   def determine_attributes_kind
-      
-      myself = self 
 
+   def determine_attributes_kind      
+      myself = self 
 
       steps = {
          generator:  ->(){  detect_generator myself.meta_tags },
@@ -100,7 +99,7 @@ module HtmlTrawl
 
       atts_hsh = { }
 
-      steps.each_pair do |key, resolve_foo|
+      steps.each_pair do |key, foo_html|
          if key.is_a?(Symbol)
             sym = key
             foo = key
@@ -108,9 +107,9 @@ module HtmlTrawl
             sym, foo = key 
          end 
          
-         if vals = resolve_foo.call() 
-#            resolve_foo = "resolve_cms_from_#{foo}"
-            atts_hsh[sym] = self.send resolve_foo, vals
+         if vals = foo_html.call() 
+            det_foo = "determine_cms_from_#{foo}".to_sym
+            atts_hsh[sym] = self.send det_foo, vals
          end
       end
 
@@ -119,55 +118,88 @@ module HtmlTrawl
 
 
    # calls determine_attributes_kind
-   # sets @cms based on the count of the determine_attributes_kind hash
+   # returns a list of CMS and counts of attributes
 
-   def determine_cms
+      def gather_cmses
+         atts_hsh = determine_attributes_kind 
 
-      atts_hsh = determine_attributes_kind 
+         count_hsh = atts_hsh.values.inject(Hash.new{|h,k| h[k] = 0 }){ |hsh, val|
+               hsh[val] += 1 unless val.nil?
+               hsh
+         }        
+      end
 
-      count_hsh = atts_hsh.values.inject(Hash.new{|h,k| h[k] = 0 }){ |hsh, val|
-            hsh[val] += 1 unless val.nil?
+
+      def _determine_cms_from_string_tests(test_sym, strings)
+
+         arr = Array(strings)
+
+         site_types = get_site_types_with(:string, test_sym)
+
+         match_hsh = arr.inject(Hash.new{|h,k| h[k] = 0 }) do |hsh, path|
+            site_types.each_pair do |k, regex|
+               hsh[k] += 1 if path.match regex 
+            end
+
             hsh
-      }
+         end
 
-      if count_hsh.empty?
-         @cms = nil
-      else
-         @cms = count_hsh.sort_by{|k,v| v}[-1][0]
-      end       
+
+         if match_hsh.keys.length == 1
+            return match_hsh.keys[0]
+         elsif match_hsh.empty?
+            return nil
+         else
+            return match_hsh.sort_by{|x| x[1]}.reverse
+         end
+      end
+
+      def method_missing(meth, *args, &block)
+         if foo_name = meth.to_s.match(/^determine_cms_from_(\w+)$/)
+            foo_name = $1
+            send :_determine_cms_from_string_tests, foo_name.to_sym, *args
+         else
+            super 
+         end
+      end
+
+
+
+
+
+      def js_script_tags
+         @js_tags ||= @parsed_html.css('script')
+      end
+
+
+      def css_script_tags
+         @css_tags  ||= @parsed_html.css("link[href*='.css']")
+      end
+
+      def head_tag 
+         @h_tag ||= @parsed_html.css('head')
+      end
+
+
+      def meta_tags
+         @metas ||= head_tag.css('meta')
+      end  
+
+
+      def detect_generator(content)
+         if el = @parsed_html.css('meta[name="generator"]')[0]
+            return el['content']
+         end   
+      end
+
+
+      private 
+
+      def get_site_types_with(foo_test, foo_sym)
+         SITE_TESTS[foo_test].inject({}){ |hsh, (k,v)| hsh[k] = v[foo_sym] if v[foo_sym]; hsh }
+      end
+
    end
-
-
-
-   def js_script_tags
-      @js_tags ||= @parsed_content.css('script')
-   end
-
-
-   def css_script_tags
-      @css_tags  ||= @parsed_content.css("link[href*='.css']")
-   end
-
-   def head_tag 
-      @h_tag ||= @parsed_content.css('head')
-   end
-
-
-   def meta_tags
-      @metas ||= head_tag.css('meta')
-   end  
-
-
-   def detect_generator(content)
-      if el = @parsed_content.css('meta[name="generator"]')[0]
-         return el['content']
-      end   
-   end
-
-=end 
-end
-
-
 end
 
 
