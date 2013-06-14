@@ -17,13 +17,20 @@ describe "Should detect the content generator", skip: false do
          end      
       end
 
-   end
+      context "Blogger" do 
+         it 'should detect obvious Blogger site' do 
+            @resolver = GeneratorResolver.new PageFixtures.load('posts/google.blogspot.post.html')
+            expect( @resolver.likely_cms ).to eq 'Blogger'
+         end
+      end
 
-   context "Blogger" do 
-   end
+      context "Drupal" do 
+         it "should detect obvious Drupal site" do 
+            @resolver = GeneratorResolver.new PageFixtures.load('posts/whitehouse.blogpost.html')
+            expect( @resolver.likely_cms ).to eq 'Drupal'
+         end
+      end
 
-
-   context "Drupal" do 
    end
 
 
