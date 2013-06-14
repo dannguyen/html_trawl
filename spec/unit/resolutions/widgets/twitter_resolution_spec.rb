@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe WidgetResolver do 
+describe TwitterResolver do 
 
 
    context "Twitter" do 
@@ -8,7 +8,7 @@ describe WidgetResolver do
  
       describe '#twitter_accounts' do 
          it "should locate twitter accounts" do 
-            @resolver = WidgetResolver.new PageFixtures.load('posts/danwin-mid.html')
+            @resolver = TwitterResolver.new PageFixtures.load('posts/danwin-mid.html')
             expect( @resolver.twitter_accounts.first).to eq ['dancow', 'twitter-follow-button']
          end
       end
@@ -17,12 +17,12 @@ describe WidgetResolver do
        
          it "should NOT pick up twitter.com/share" do 
             bad_content = %Q{<html><body><a href="http://twitter.com/share" class="twitter-follow-button"></a></body></html>}
-            @resolver = WidgetResolver.new bad_content 
+            @resolver = TwitterResolver.new bad_content 
             expect( @resolver.twitter_accounts ).to be_empty
          end
 
          it "should return nil if no choice" do 
-            @resolver = WidgetResolver.new(%Q{<html></html>})
+            @resolver = TwitterResolver.new(%Q{<html></html>})
             expect(@resolver.pick_twitter_account).to be_nil
          end
 
@@ -43,7 +43,7 @@ describe WidgetResolver do
 
                </body></html>         }
 
-               @resolver = WidgetResolver.new @content 
+               @resolver = TwitterResolver.new @content 
             end
 
             it "should locate a mix of accounts" do 
@@ -73,7 +73,7 @@ describe WidgetResolver do
 
                </body></html>         }
 
-               @resolver = WidgetResolver.new(mixed_content)
+               @resolver = TwitterResolver.new(mixed_content)
 
                expect( @resolver.pick_twitter_account  ).to eq 'dancow'
 
