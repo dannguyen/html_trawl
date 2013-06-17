@@ -30,6 +30,17 @@ describe ArticleResolver do
    end
 
 
+   describe "exporting to_hash" do 
+
+      it "should export to_hash" do 
+         @blog_post ||= PageFixtures.load('posts/danwin-mid.html')
+         @resolver =  ArticleResolver.new @blog_post
+         hsh = @resolver.to_hash 
+         expect(hsh.content_title).to eq 'The Google death and resurrection of Amy Wilentz'
+      end
+   end
+
+
    describe "meta analysis via pismo" do 
 
       before do 

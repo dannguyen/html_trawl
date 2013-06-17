@@ -5,10 +5,14 @@ module HtmlTrawl
 
 		attr_reader :parsed_html
 
+		
+		module ExportAsAttributes; end 
+		include self::ExportAsAttributes
+		# each class is responsible for implementing this
+
 		def initialize(htmlnode)
 			@parsed_html = parse_content(htmlnode)
 		end
-
 
 		# return Nokogiri wrapper
 	   def parse_content(ct)   
@@ -19,6 +23,24 @@ module HtmlTrawl
 	      else  
 	        return Nokogiri::HTML(ct)
 	      end  
+	   end
+
+	   def exportable_attributes
+	   	klass = self.class
+	   	if klass.const_defined?(:ExportAsAttributes)
+			   klass::ExportAsAttributes.public_instance_methods
+			else
+				return []
+			end
+		end
+
+	   def to_hash
+	   	hsh = Hashie::Mash.new	
+	   	exportable_attributes.inject(hsh) do |h, foo|
+	   		h[foo] = self.send foo
+	   		h
+	   	end		   
+		   return hsh
 	   end
 
 	end

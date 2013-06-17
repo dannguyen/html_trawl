@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Dan Nguyen"]
   spec.email         = ["dansonguyen@gmail.com"]
   spec.description   = "A collection of libraries to process web pages"
-  spec.summary       = ""
-  spec.homepage      = ""
+  spec.summary       = "Parsing and such"
+  spec.homepage      = "http://github.com/dannguyen"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -30,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "nokogiri"
   spec.add_dependency "pismo"
   spec.add_dependency "ruby-readability"
-   
+  spec.add_dependency "fastimage"
 
 end

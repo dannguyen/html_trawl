@@ -5,7 +5,6 @@ require 'hashie'
 module HtmlTrawl
 	class ArticleResolver < Resolver
 
-
 		def initialize(htmlnode)
 			@parsed_html = parse_content(htmlnode)
 			@raw_html = @parsed_html.to_html
@@ -26,73 +25,73 @@ module HtmlTrawl
 	      @_content_nodes ||= Nokogiri::HTML(self.content)
 	   end
 
-	   def content_links
-	      # ignore blank/anchor links
-	      # todo: move this to convert_relative_links
 
-	      @_content_links ||= content_parsed.css('a').reject{ |a| 
-	         href = a['href']
-	         href.blank? || href =~ /^#/ 
-	      }
-	   end
+	   module ExportAsAttributes
+		   def content_links
+		      # ignore blank/anchor links
+		      # todo: move this to convert_relative_links
 
-	   def content_words 
-	      @content_words ||= content_text.split /\W+/
-	   end
+		      @_content_links ||= content_parsed.css('a').reject{ |a| 
+		         href = a['href']
+		         href.blank? || href =~ /^#/ 
+		      }
+		   end
 
-	   def content_word_count
-	      content_words.count
-	   end
+		   def content_words 
+		      @content_words ||= content_text.split /\W+/
+		   end
 
-	   def content_image_nodes
-	      @content_hash['Readability'].document.images
-	   end
+		   def content_word_count
+		      content_words.count
+		   end
 
-
-
-	### meta stuff
-
-	   def content_published_timestamp
-	      # use manual parsing here
-
-	      time_texts = []
-	      # first, let's check for <time> elements with .entry/.publish class
-	      time_texts += @parsed_html.css('time').sort_by{|c| c['class'] =~ /entry|publish/ ? 1 : 0}.to_a.map{ |tnode| 
-	         Chronic.parse(tnode['datetime'] || tnode.text, context: :past)
-	      }
-
-	      # second, let's check for entry meta tags that contain date like texts:
-	      if time_texts.tap{|t| t.compact!}.empty?
-	         nodes = @parsed_html.xpath('//*[contains(@class, "date")]|//*[contains(@class, "time")]')
-	         time_texts += nodes.map{|t| Chronic.parse(t.text, context: :past) } 
-	      end
-
-	      # third, let's check for all meta type tags
-	      if time_texts.tap{|t| t.compact!}.empty?
-	         meta_nodes = @parsed_html.xpath('//*[contains(@class, "meta")]')
-	         time_texts += meta_nodes.map{|t| Chronic.parse(t.text, context: :past)  }
-	      end
+		   def content_image_nodes
+		      @content_hash['Readability'].document.images
+		   end
 
 
-	      if main_time_node = time_texts.tap{|t| t.compact!}.first
-	         #t = main_time_node['datetime'] || main_time_node.text
-	         timeval = main_time_node
-	      else
-	         timeval = @content_hash['Pismo'].document.datetime
-	      end
+		   def content_published_timestamp
+		      # use manual parsing here
 
-	      return timeval
-	   end
+		      time_texts = []
+		      # first, let's check for <time> elements with .entry/.publish class
+		      time_texts += @parsed_html.css('time').sort_by{|c| c['class'] =~ /entry|publish/ ? 1 : 0}.to_a.map{ |tnode| 
+		         Chronic.parse(tnode['datetime'] || tnode.text, context: :past)
+		      }
 
-	   def content_title
-	      @content_hash['Pismo'].document.title 
-	   end
+		      # second, let's check for entry meta tags that contain date like texts:
+		      if time_texts.tap{|t| t.compact!}.empty?
+		         nodes = @parsed_html.xpath('//*[contains(@class, "date")]|//*[contains(@class, "time")]')
+		         time_texts += nodes.map{|t| Chronic.parse(t.text, context: :past) } 
+		      end
 
-	   def content_description
-	      @content_hash['Pismo'].document.description
-	   end
+		      # third, let's check for all meta type tags
+		      if time_texts.tap{|t| t.compact!}.empty?
+		         meta_nodes = @parsed_html.xpath('//*[contains(@class, "meta")]')
+		         time_texts += meta_nodes.map{|t| Chronic.parse(t.text, context: :past)  }
+		      end
 
 
+		      if main_time_node = time_texts.tap{|t| t.compact!}.first
+		         #t = main_time_node['datetime'] || main_time_node.text
+		         timeval = main_time_node
+		      else
+		         timeval = @content_hash['Pismo'].document.datetime
+		      end
+
+		      return timeval
+		   end
+
+		   def content_title
+		      @content_hash['Pismo'].document.title 
+		   end
+
+		   def content_description
+		      @content_hash['Pismo'].document.description
+		   end
+		end # ExportAsAttributes
+
+		include ExportAsAttributes
 
 
 
