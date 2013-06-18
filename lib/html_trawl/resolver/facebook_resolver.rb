@@ -2,7 +2,7 @@ module HtmlTrawl
   class FacebookResolver < Resolver
 
     FACEBOOK_URL_REGEXES = {
-      profile: /https?:\/\/(?:www\.)?facebook\.com\/(?!share)([^\/]+)\/?$/
+      profile: /https?:\/\/(?:www\.)?facebook\.com\/(?!\w+\.php)([^\/]+)\/?$/
     }
 
     FACEBOOK_PATTERNS = [
@@ -35,6 +35,7 @@ module HtmlTrawl
 #### CLASS METHODS
 
 
+  # warning, not used
   def self.parse_facebook_handle(url)
        if handle = url.strip.match(FACEBOOK_URL_REGEXES[:profile])
           return handle[1]
@@ -47,9 +48,7 @@ module HtmlTrawl
       # each pattern type returns a 1-D array
 
       FACEBOOK_PATTERNS.each do |f_arr|
-        pattern_type, foo = f_arr 
-
-        
+        pattern_type, foo = f_arr         
         foo.call(parsed_content).each do |val|
           accounts_arr << [val, pattern_type]
         end

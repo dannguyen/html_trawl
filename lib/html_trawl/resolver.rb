@@ -5,7 +5,7 @@ module HtmlTrawl
 
 		attr_reader :parsed_html
 
-		
+
 		module ExportAsAttributes; end 
 		include self::ExportAsAttributes
 		# each class is responsible for implementing this
@@ -35,7 +35,7 @@ module HtmlTrawl
 		end
 
 	   def to_hash
-	   	hsh = Hashie::Mash.new	
+	   	hsh = Hashie::Mash.new(resolved_timestamp: Time.now)
 	   	exportable_attributes.inject(hsh) do |h, foo|
 	   		h[foo] = self.send foo
 	   		h

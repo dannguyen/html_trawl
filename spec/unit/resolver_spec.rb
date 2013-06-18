@@ -28,7 +28,7 @@ describe HtmlTrawl::Resolver, skip: false do
       end
       it "should export the methods via a Hashie" do 
          hsh = @resolver.to_hash
-         expect(hsh.values).to eq ['baz1', 'baz2']
+         expect(hsh.values).to include 'baz1', 'baz2'
       end
    end
 end 
