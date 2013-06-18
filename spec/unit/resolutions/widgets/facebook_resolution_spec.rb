@@ -10,6 +10,14 @@ describe FacebookResolver do
 				@resolver = FacebookResolver.new(%q{<html><a href="http://www.facebook.com/example"><img src="http://www.example.com/wp-content/themes/example/images/Facebook.png" alt="Facebook"></a></html>})
 				expect(@resolver.facebook_accounts).to eq [["example", :href]]
 			end
+
+
+			it "should not select facebook share link" do 
+				@resolver = FacebookResolver.new(%q{<html><a href="http://www.facebook.com/share.php?hello"><img src="http://www.example.com/wp-content/themes/example/images/Facebook.png" alt="Facebook"></a></html>})
+				expect(@resolver.facebook_accounts).to be_empty
+			end
+
+
 	
 			it "should locate locate two basic facebook link" do 
 				@resolver = FacebookResolver.new(%q{<html><a href="http://www.facebook.com/example"><img src="http://www.example.com/wp-content/themes/example/images/Facebook.png" alt="Facebook"></a>

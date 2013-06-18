@@ -8,7 +8,7 @@ module HtmlTrawl
     INSTAGRAM_PATTERNS = [
       [ 
         :href, ->(p_content) do 
-          p_content.css('a').map{|a| a['href'].match(INSTAGRAM_URL_REGEXES[:profile]).andand[1] }.compact
+          p_content.css('a').map{|a| a['href'].andand.match(INSTAGRAM_URL_REGEXES[:profile]).andand[1] }.compact
         end
       ]
     ]
