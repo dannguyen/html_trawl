@@ -13,7 +13,7 @@ describe FacebookResolver do
 
 
 			it "should not select facebook share link" do 
-				@resolver = FacebookResolver.new(%q{<html><a href="http://www.facebook.com/share.php?hello"><img src="http://www.example.com/wp-content/themes/example/images/Facebook.png" alt="Facebook"></a></html>})
+				@resolver = FacebookResolver.new(%q{<html><a href="http://www.facebook.com/share.php?u=http%3A%2F%2Fwww.example.com%2Fphoto%2Fphoto%2Flist%3Ffrom%3Dfb"><img src="http://www.example.com/wp-content/themes/example/images/Facebook.png" alt="Facebook"></a></html>})
 				expect(@resolver.facebook_accounts).to be_empty
 			end
 

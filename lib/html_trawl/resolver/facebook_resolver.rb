@@ -2,7 +2,7 @@ module HtmlTrawl
   class FacebookResolver < Resolver
 
     FACEBOOK_URL_REGEXES = {
-      profile: /https?:\/\/(?:www\.)?facebook\.com\/*(?!share)([^\/]+)\/?$/
+      profile: /https?:\/\/(?:www\.)?facebook\.com\/(?!share)([^\/]+)\/?$/
     }
 
     FACEBOOK_PATTERNS = [
