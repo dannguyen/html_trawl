@@ -13,14 +13,21 @@ module HtmlTrawl
       ]
     ]
 
-    def instagram_accounts
-      @_instagram_accounts ||= InstagramResolver.detect_instagram_accounts(@parsed_html)
-    end
 
-    # for now, just pick the first
-    def pick_instagram_account
-      instagram_accounts.first.andand.first
+    module ExportAsAttributes
+
+      def instagram_accounts
+        @_instagram_accounts ||= InstagramResolver.detect_instagram_accounts(@parsed_html)
+      end
+
+      # for now, just pick the first
+      def likely_instagram_account
+        instagram_accounts.first.andand.first
+      end
+
     end
+    include ExportAsAttributes
+
 
 
 

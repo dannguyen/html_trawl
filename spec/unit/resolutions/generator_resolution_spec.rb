@@ -1,7 +1,15 @@
 require 'spec_helper'
 describe "Should detect the content generator", skip: false do 
 
+   describe '#exported_hash' do 
 
+      it 'should return Mash with :likely_cms and :cms_candidates' do 
+         @resolver = GeneratorResolver.new PageFixtures.load('posts/danwin-mid.html')
+         @hsh = @resolver.to_hash
+         expect( @hsh.likely_cms ).to eq 'WordPress'
+         expect( @hsh.cms_candidates ).to be_a Hash
+      end
+   end
    describe '#likely_cms' do 
       context "WordPress" do 
          it "should detect obvious Wordpress site" do

@@ -23,18 +23,18 @@ describe InstagramResolver do
 
     end
 
-    describe '#pick_instagram_account' do 
+    describe '#likely_instagram_account' do 
       it "should choose most likely FB" do 
         @resolver = InstagramResolver.new(%q{<html><a href="http://www.instagram.com/example"><img src="http://www.example.com/wp-content/themes/example/images/Instagram.png" alt="Instagram"></a>
           stuff stuff
           <a href="https://instagram.com/example">Instagram again</a>
           </html>})
   
-        expect(@resolver.pick_instagram_account).to eq "example"
+        expect(@resolver.likely_instagram_account).to eq "example"
       end
 
       it "should return nil if no Instagram accounts" do 
-        expect( InstagramResolver.new("<html></html>").pick_instagram_account).to be_nil  
+        expect( InstagramResolver.new("<html></html>").likely_instagram_account).to be_nil  
       end
     end
   end

@@ -2,15 +2,29 @@ module HtmlTrawl
    class GeneratorResolver < Resolver
 
 
+      module ExportAsAttributes
+         def likely_cms 
+            count_hsh = cms_candidates
+            if count_hsh.empty?
+               return nil
+            else
+               return count_hsh.sort_by{|k,v| v}[-1][0]
+            end       
+         end
 
-      def likely_cms 
-         count_hsh = gather_cmses
-         if count_hsh.empty?
-            return nil
-         else
-            return count_hsh.sort_by{|k,v| v}[-1][0]
-         end       
+         # calls determine_attributes_kind
+         # returns a list of CMS and counts of attributes
+
+         def cms_candidates
+            atts_hsh = determine_attributes_kind 
+
+            count_hsh = atts_hsh.values.inject(Hash.new{|h,k| h[k] = 0 }){ |hsh, val|
+                  hsh[val] += 1 unless val.nil?
+                  hsh
+            }        
+         end
       end
+      include ExportAsAttributes
 
       # https://github.com/nqbao/chromesniffer/blob/master/detector.js
       SITE_TESTS = {
@@ -117,17 +131,7 @@ module HtmlTrawl
    end
 
 
-   # calls determine_attributes_kind
-   # returns a list of CMS and counts of attributes
-
-      def gather_cmses
-         atts_hsh = determine_attributes_kind 
-
-         count_hsh = atts_hsh.values.inject(Hash.new{|h,k| h[k] = 0 }){ |hsh, val|
-               hsh[val] += 1 unless val.nil?
-               hsh
-         }        
-      end
+   
 
 
       def _determine_cms_from_string_tests(test_sym, strings)

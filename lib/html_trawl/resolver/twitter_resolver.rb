@@ -6,27 +6,35 @@ module HtmlTrawl
          follow_text: /me|follow|my|I'm/i 
       }
 
-    def twitter_accounts
-      @_twitter_accounts ||= TwitterResolver.detect_twitter_accounts(@parsed_html)
+
+    module ExportAsAttributes
+
+
+      def twitter_accounts
+        @_twitter_accounts ||= TwitterResolver.detect_twitter_accounts(@parsed_html)
+      end
+
+
+      def likely_twitter_account
+         return if twitter_accounts.empty?
+
+         if t = twitter_accounts.rassoc('twitter-follow-button')
+            return t[0]
+         elsif t = twitter_accounts.rassoc('link-text-follow')
+            return t[0]
+         else 
+            vals = twitter_accounts.inject(Hash.new{|h,k| h[k] = 0}){ |hsh, row|
+               hsh[(row[0])] += 1
+               hsh 
+            }.sort_by{|h| h[1]}.reverse
+
+            return vals.first[0]
+         end
+      end
+
+
     end
-
-
-    def pick_twitter_account
-       return if twitter_accounts.empty?
-
-       if t = twitter_accounts.rassoc('twitter-follow-button')
-          return t[0]
-       elsif t = twitter_accounts.rassoc('link-text-follow')
-          return t[0]
-       else 
-          vals = twitter_accounts.inject(Hash.new{|h,k| h[k] = 0}){ |hsh, row|
-             hsh[(row[0])] += 1
-             hsh 
-          }.sort_by{|h| h[1]}.reverse
-
-          return vals.first[0]
-       end
-    end
+    include ExportAsAttributes
 
 
 #### CLASS METHODS

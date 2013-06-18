@@ -13,7 +13,7 @@ describe TwitterResolver do
          end
       end
 
-      describe '#pick_twitter_account' do 
+      describe '#likely_twitter_account' do 
        
          it "should NOT pick up twitter.com/share" do 
             bad_content = %Q{<html><body><a href="http://twitter.com/share" class="twitter-follow-button"></a></body></html>}
@@ -23,7 +23,7 @@ describe TwitterResolver do
 
          it "should return nil if no choice" do 
             @resolver = TwitterResolver.new(%Q{<html></html>})
-            expect(@resolver.pick_twitter_account).to be_nil
+            expect(@resolver.likely_twitter_account).to be_nil
          end
 
 
@@ -56,7 +56,7 @@ describe TwitterResolver do
             end
 
             it "should pick most likely choice " do 
-               expect( @resolver.pick_twitter_account ).to eq 'dancow'
+               expect( @resolver.likely_twitter_account ).to eq 'dancow'
             end
 
 
@@ -75,7 +75,7 @@ describe TwitterResolver do
 
                @resolver = TwitterResolver.new(mixed_content)
 
-               expect( @resolver.pick_twitter_account  ).to eq 'dancow'
+               expect( @resolver.likely_twitter_account  ).to eq 'dancow'
 
             end
 

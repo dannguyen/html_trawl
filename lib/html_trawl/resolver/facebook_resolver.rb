@@ -13,14 +13,22 @@ module HtmlTrawl
       ]
     ]
 
-    def facebook_accounts
-      @_facebook_accounts ||= FacebookResolver.detect_facebook_accounts(@parsed_html)
-    end
 
-    # for now, just pick the first
-    def pick_facebook_account
-      facebook_accounts.first.andand.first
+    module ExportAsAttributes
+
+      def facebook_accounts
+        @_facebook_accounts ||= FacebookResolver.detect_facebook_accounts(@parsed_html)
+      end
+
+      # for now, just pick the first
+      def likely_facebook_account
+        facebook_accounts.first.andand.first
+      end
     end
+    include ExportAsAttributes
+
+
+
 
 
 
