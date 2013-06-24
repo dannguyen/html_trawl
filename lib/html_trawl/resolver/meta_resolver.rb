@@ -40,7 +40,7 @@ module HtmlTrawl
       end
 
       def meta_keywords_array
-         meta_keywords.split(',').map{|m| m.gsub(/\s/, ' ').strip }
+         meta_keywords.split(',').map{|m| m.gsub(/\s/, ' ').strip } if meta_keywords.present?
       end
 
       ### oggy oggy oggie
