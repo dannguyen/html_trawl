@@ -171,25 +171,6 @@ module HtmlTrawl
 
 
 
-      def js_script_tags
-         @js_tags ||= @parsed_html.css('script')
-      end
-
-
-      def css_script_tags
-         @css_tags  ||= @parsed_html.css("link[href*='.css']")
-      end
-
-      def head_tag 
-         @h_tag ||= @parsed_html.css('head')
-      end
-
-
-      def meta_tags
-         @metas ||= head_tag.css('meta')
-      end  
-
-
       def detect_generator(content)
          if el = @parsed_html.css('meta[name="generator"]')[0]
             return el['content']

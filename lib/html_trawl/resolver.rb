@@ -43,6 +43,30 @@ module HtmlTrawl
 		   return hsh
 	   end
 
+
+	   ## HTML specific
+
+
+      def js_script_tags
+         @js_tags ||= @parsed_html.css('script')
+      end
+
+
+      def css_script_tags
+         @css_tags  ||= @parsed_html.css("link[href*='.css']")
+      end
+
+      def head_tag 
+         @h_tag ||= @parsed_html.css('head')
+      end
+
+
+      def meta_tags
+         @metas ||= head_tag.css('meta')
+      end  
+
+
+
 	end
 end
 
