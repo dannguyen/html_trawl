@@ -5,7 +5,6 @@ module HtmlTrawl
 
 		attr_reader :parsed_html
 
-
 		module ExportAsAttributes; end 
 		include self::ExportAsAttributes
 		# each class is responsible for implementing this
@@ -65,6 +64,23 @@ module HtmlTrawl
          @metas ||= head_tag.css('meta')
       end  
 
+      def main_content
+         @_main_content ||= remove_sidebar_content(@parsed_html)
+      end
+
+
+      private 
+
+
+      # removes obvious sidebar content
+      # creates and returns a stripped clone of that object
+      def remove_sidebar_content(_parsed_page_object)
+         stripped_page = _parsed_page_object.clone 
+         aside_els = stripped_page.xpath("//*[contains(@class, 'sidebar') or contains(@class, 'widget') or contains(@id, 'widget') or contains(@id, 'sidebar')]" )
+         aside_els.remove
+
+         return stripped_page
+      end
 
 
 	end
