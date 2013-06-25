@@ -25,11 +25,37 @@ describe BlogIndexResolver, skip: false do
          expect( @resolver.post_links_count ).to eq 0
       end
 
-      it 'should return 0 if no headline links found' do 
+      it 'should return 0 if no links wrapped in headline are found' do 
          @resolver = BlogIndexResolver.new(%q{<html><body>
             <p><a href="http://example.com/stuff">Example</a></p>
          </body></html>})
          expect( @resolver.post_links_count ).to eq 0
       end
+
+      it 'should only return unique elements'
+      it 'should only'
    end
+
+
+   describe ':headline_element' do 
+      it 'should NOT count headline occurrences of less than MINIMUM_HEADLINE_ELEMENT_COUNT' do 
+         @resolver = BlogIndexResolver.new(%q{<html><body>
+            <div class="post"><h4><a href="http://example.com/stuff">Example</a></h4></div>
+         </body></html>})
+
+         expect( @resolver.headline_element ).to be_nil
+      end
+
+      it 'should count headline occurrences of more than MINIMUM_HEADLINE_ELEMENT_COUNT' do 
+         @resolver = BlogIndexResolver.new(%q{<html><body>
+            <div class="post"><h4><a href="http://example.com/stuff">Example</a></h4></div>
+            <div class="post"><h4><a href="http://example.com/stuff2">Example2</a></h4></div>
+            <div class="post"><h4><a href="http://example.com/stuff3">Example3</a></h4></div>
+            <div class="post"><h4><a href="http://example.com/stuff4">Example4</a></h4></div>
+         </body></html>})
+
+         expect( @resolver.headline_element ).to eq 'div > h4 > a'
+      end
+   end
+
 end
