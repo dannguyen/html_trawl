@@ -32,12 +32,18 @@ describe BlogIndexResolver, skip: false do
          expect( @resolver.post_links_count ).to eq 0
       end
 
-      it 'should only return unique elements'
-      it 'should only'
+      it 'should only return unique links' do 
+
+      end
+
+      it 'should only' do 
+
+      end
    end
 
 
    describe ':headline_element' do 
+
       it 'should NOT count headline occurrences of less than MINIMUM_HEADLINE_ELEMENT_COUNT' do 
          @resolver = BlogIndexResolver.new(%q{<html><body>
             <div class="post"><h4><a href="http://example.com/stuff">Example</a></h4></div>
