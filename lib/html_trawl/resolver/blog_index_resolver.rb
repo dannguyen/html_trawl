@@ -8,7 +8,7 @@ module HtmlTrawl
       def initialize(htmlnode, opts={})
          @parsed_html = parse_content(htmlnode)
          @raw_html = @parsed_html.to_html
-         @headline_element = determine_headline_el(@parsed_html)
+         @headline_element = determine_headline_el
          @absolute_url = opts[:absolute_url]
       end
 
@@ -21,16 +21,56 @@ module HtmlTrawl
       end
 
 
-      module ExportAsAttributes
-         
-      end
-      include ExportAsAttributes
-      
+      # this is memoized
+      def detect_post_element_xpaths
 
-      private 
-      def determine_headline_el(parsed_page)
+         if @_el_xpaths_arr.blank? # messy_TK
+
+            # This should be a class constant
+            post_lambdas = [
+               ->(p_page){p_page.css('.hentry')},
+               ->(p_page){ p_page.css('article')},
+               ->(p_page){p_page.css('.post')}, 
+               ->(p_page){p_page.xpath("//*[contains(@id, 'post-')]")}
+            ]
+
+
+            # results in an array of 2D elements
+            @_el_xpaths_arr = post_lambdas.map do |lam|
+               els = lam.call(@parsed_html)
+
+               if els.count > 0
+                  # if els.first = "/html/body/div[1]/div/div/article[1]"
+                  # return something like ["/html/body/div[1]/div/div/article", 10]
+                  [els.first.path.sub(/\[\d+\]$/, ''), els.count]
+               else
+                  nil
+               end
+            end
+         end
+
+         return @_el_xpaths_arr
+      end 
+
+      # convenience method
+      # returns "/html/body/div[1]/div/div/article"
+      def determine_post_element_xpath
+         els = detect_post_element_xpaths
+         els.first.andand[0]
+      end
+
+      # calls determine_post_element_xpath
+
+      def collect_post_elements
+         p_xpath = determine_post_element_xpath
+         @parsed_html.xpath(determine_post_element_xpath) 
+      end
+
+
+      def determine_headline_el
          ## check to see if there are articles
-         post_els = parsed_page.xpath("//*[self::div[contains(@class,'article') or contains(@class ,'post') or contains(@id, 'post') or contains(@class, 'entry')] or self::article]")
+
+         post_els = collect_post_elements
          
          link_count = ['h1 > a', 'h2 > a', 'h3 > a', 'h4 > a'].inject({}) do |hsh, el|
             hsh[el] = post_els.search(el)
@@ -46,6 +86,14 @@ module HtmlTrawl
             return [el.parent.parent, el.parent, el].compact.map{|e| e.node_name}.join(' > ')
          end
       end
+
+      module ExportAsAttributes; end
+      include ExportAsAttributes
+
+
+      private 
+
+      
 
 
    end

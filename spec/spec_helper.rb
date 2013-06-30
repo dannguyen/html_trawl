@@ -18,6 +18,9 @@ end
 
 RSpec.configure do |config|
 	config.filter_run_excluding :skip => true
+     config.color_enabled = true
+     config.tty = true
+
 	config.formatter = :documentation # :progress, :html, :textmate
 	config.fail_fast = true
 	config.before(:each) do
