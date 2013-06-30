@@ -53,6 +53,6 @@ end
 
 
 Dir.glob(File.join( File.dirname(__FILE__), 'blog_index_resolvers', '*.rb')).each do |rbfile|
-   puts rbfile 
+   #puts rbfile 
    require_relative rbfile 
 end
