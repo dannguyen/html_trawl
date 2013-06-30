@@ -28,7 +28,7 @@ module HtmlTrawl
       include ExportAsAttributes
 
       def meta_title
-         head_tag.css('title').text
+         head_tag.css('title').text.strip
       end
 
       def meta_description

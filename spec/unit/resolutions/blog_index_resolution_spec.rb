@@ -43,7 +43,6 @@ describe BlogIndexResolver, skip: false do
 
 
    describe ':headline_element' do 
-
       it 'should NOT count headline occurrences of less than MINIMUM_HEADLINE_ELEMENT_COUNT' do 
          @resolver = BlogIndexResolver.new(%q{<html><body>
             <div class="post"><h4><a href="http://example.com/stuff">Example</a></h4></div>
