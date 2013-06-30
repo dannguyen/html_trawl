@@ -4,11 +4,16 @@ describe "WordPressIndexResolver", skip: false do
 
    describe "actual index page, post elements detection" do
 
-      it 'should return post elements' do 
-         @resolver = WordPressIndexResolver.new( PageFixtures.load('pages/wp-elliott-index.html'))
-         
+      before(:each) do 
+          @resolver = WordPressIndexResolver.new( PageFixtures.load('pages/wp-elliott-index.html'))
+      end
+
+      it 'should return post elements' do  
          expect( @resolver.collect_post_elements.count ).to eq 7
-         expect( @resolver.post_links_count).to eq 7
+      end
+
+      it 'should have headline elements for each post element' do 
+         expect( @resolver.post_urls_count).to eq 7
       end
 
    end
