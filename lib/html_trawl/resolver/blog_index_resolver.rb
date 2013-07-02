@@ -46,8 +46,8 @@ module HtmlTrawl
             post_lambdas = [
                ->(p_page){p_page.css('.hentry')},
                ->(p_page){ p_page.css('article')},
-               ->(p_page){p_page.css('.post')}, 
-               ->(p_page){p_page.xpath("//*[contains(@id, 'post-')]")}
+               ->(p_page){p_page.xpath("//*[contains(@id, 'post-')]")},
+               ->(p_page){p_page.css('.post')}
             ]
 
 
@@ -75,9 +75,9 @@ module HtmlTrawl
 
                all_first_els.any?{|a| first_el.ancestors.include?(a) }
             end
-
-
          end
+
+         
 
          return @_el_xpaths_arr
       end 
