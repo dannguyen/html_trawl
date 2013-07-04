@@ -84,6 +84,8 @@ module HtmlTrawl
 
       # convenience method
       # returns "/html/body/div[1]/div/div/article"
+      # TK: Major bug: this will capture siblings with the same tag name, so class name needs to 
+      # be specified
       def determine_post_element_xpath
          els = detect_post_element_xpaths
          els.first.andand[0]
@@ -110,8 +112,7 @@ module HtmlTrawl
          el_name, els = sorted_occ.first
 
          # build up el name with parent
-         if el_name 
-            el = els.first 
+         if el = els.first  
             return [el.parent, el].compact.map{|e| e.node_name}.join(' > ')
          end
       end
