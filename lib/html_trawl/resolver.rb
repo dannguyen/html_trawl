@@ -15,13 +15,7 @@ module HtmlTrawl
 
 		# return Nokogiri wrapper
 	   def parse_content(ct)   
-	      if ct.is_a? Nokogiri::XML::NodeSet
-	         return Nokogiri::HTML( ct.to_html )
-	      elsif ct.is_a?(Nokogiri::XML::Node) 
-	         return ct
-	      else  
-	        return Nokogiri::HTML(ct)
-	      end  
+         return Resolver.parse_html_to_nokogiri(ct)
 	   end
 
 	   def exportable_attributes
@@ -68,6 +62,29 @@ module HtmlTrawl
          @_main_content ||= remove_sidebar_content(@parsed_html)
       end
 
+
+
+      def self.parse_html_to_nokogiri(ct)
+         if ct.is_a? Nokogiri::XML::NodeSet
+            return Nokogiri::HTML( ct.to_html )
+         elsif ct.is_a?(Nokogiri::XML::Node) 
+            return ct
+         else  
+           return Nokogiri::HTML(ct)
+         end  
+      end
+
+      def self.convert_nokogiri_to_html_text(ct)
+         if ct.is_a? Nokogiri::XML::NodeSet
+            return ct.to_html
+         elsif ct.is_a?(Nokogiri::XML::Node) 
+            return ct.to_html
+         elsif ct.is_a?(String)
+           return ct
+         else 
+            raise ArgumentError, 'argument expected to be a string or Nokogiri object' 
+         end  
+      end
 
       private 
 
