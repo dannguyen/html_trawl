@@ -32,8 +32,8 @@ module HtmlTrawl
     }
 
     DTX_DAY = {
-      full_day: /\b(?<full_day>(?:3[0-1]|2\d|1\d|0[1-9]))\b/,            
-      human_day: /\b(?<human_day>(?:3[0-1]|2\d|1\d|0?[1-9]))\b/,
+      full_day: /\b(?<full_day>(?:3[0-1]|2\d|1\d|0[1-9]))/,            
+      human_day: /\b(?<human_day>(?:3[0-1]|2\d|1\d|0?[1-9]))/,
       written_day: /\b(?<written_day>\d?(?:1(?:st)?|2(?:nd)?|3(?:rd)?|[4567890](?:th)?))/
     }
 
@@ -91,33 +91,20 @@ module HtmlTrawl
 
         })
 
-=begin
-    DATETIME_REGEXEN = [
 
-      /#{ALL_MONTHS_REGEX}\b\s+\d+\D{1,10}\d{4}/i,
-      /(on\s+)?\d+\s+#{ALL_MONTHS_REGEX}\s+\D{0,10}\d+/i,
-      /(on[^\d+]{1,10})\d+(th|st|rd)?.{1,10}#{ALL_MONTHS_REGEX}\b[^\d]{1,10}\d+/i,
-      /\b\d{4}\-\d{2}\-\d{2}\b/i,
-      /\d+(th|st|rd).{1,10}#{ALL_MONTHS_REGEX}\b[^\d]{1,10}\d+/i,
-      /\d+\s+#{ALL_MONTHS_REGEX}\b[^\d]{1,10}\d+/i,
-      /on\s+#{ALL_MONTHS_REGEX}\s+\d+/i,
-      /#{ALL_MONTHS_REGEX}\s+\d+/i,
-      /\d{4}[\.\/\-]\d{2}[\.\/\-]\d{2}/,
-      /\d{2}[\.\/\-]\d{2}[\.\/\-]\d{4}/
-    ]
-=end
 
-    def TimestampRegexMatcher.find_matches(org_str)
+    def TimestampRegexMatcher.find_dates(org_str)
       # each match slices! the string, so we make a clone here
       # to avoid altering the original string
       str = org_str.clone 
 
-      found_matches = DATE_REGEXERS.inject([]){ |arr, (regex_name, regex_type_hsh)|
+      all_found_matches = DATE_REGEXERS.inject([]){ |arr, (regex_name, regex_type_hsh)|
         regex = regex_type_hsh[:regex]
         # get an array of MatchDatums
-        matches = str.to_enum(:scan, regex).map{ r = Regexp.last_match; [r, r.begin(0), r.end(0)]}
+        this_regex_matches = str.to_enum(:scan, regex).map{ r = Regexp.last_match; [r, r.begin(0), r.end(0)]}
         # note that @str is modified by slice each time
-        matches.each do |mtch_and_pos|          
+
+        this_regex_matches.each do |mtch_and_pos|          
           mashie = Hashie::Mash.new
           mashie.regex = regex
           mashie.regex_name = regex_name.to_sym
@@ -125,13 +112,19 @@ module HtmlTrawl
           
           mashie.regex_match, 
           mashie.regex_begin, 
-          mashie.regex_end    =  mtch_and_pos 
-          
-          # iterate through each named group, e.g. :year, :month, :day
+          mashie.regex_end    =  mtch_and_pos           
+
           _m = mashie.regex_match #convenience variable
+          mashie.string_match = _m.to_s
+
+          # iterate through each named group, e.g. :year, :month, :day
           _m.names.each{ |name| mashie[name] = _m[name] }
-          # slice! the string
-          mashie.string_match = str.slice!(_m.regexp)
+         
+
+          # modify the (cloned) receiver string, replace the match with a series of DTK so that
+          # the date string isn't matched successive times by looser date standards
+          m_length = mashie.string_match.length # convenience
+          str = str.sub(regex, ('DTK' * (m_length / 3.0).ceil)[0..(m_length-1)] )
 
           arr << mashie
         end
@@ -139,7 +132,7 @@ module HtmlTrawl
         arr
       }
 
-      return found_matches
+      return all_found_matches
     end
 
 
