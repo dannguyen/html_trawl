@@ -9,15 +9,10 @@ module HtmlTrawl
     ALL_WRITTEN_MONTHS_REGEX = %r{#{FULL_MONTHS_REGEX}|#{ABBREV_MONTHS_REGEX}}
 
     DTX = {      
-      hour: %r{(?<hour>\d{2})} ,
-      minute: %r{(?<minute>\d{2})},
-      second: %r{(?<second>\d{2})},
-      timezone: %r{(?<timezone>(?:\+|-)\d{4})},
       month_abbrev: ABBREV_MONTHS_REGEX,
       month_full: FULL_MONTHS_REGEX,
-      dash: %r{-},
-      time_delim: %r{:},
-    }
+      dash: %r{-}  
+      }
 
     DTX_YEAR = {
       full_year: /\b(?<full_year>\d{4})\b/,
@@ -42,18 +37,16 @@ module HtmlTrawl
     DTX[:date_delim] = %r{(?:#{DTX[:dash]}|\.|\/)} # 3/12/2000, 3.12.2000, 3-12-2000
 
 
-    DTX[:program_full_date] = [/(?<year>#{DTX_YEAR[:full_year]})/, 
+    DTX[:iso_full_date] = [/(?<year>#{DTX_YEAR[:full_year]})/, 
         /(?<month>#{DTX_MONTH[:full_month]})/,
         /(?<day>#{DTX_DAY[:full_day]})/].join(DTX[:dash].to_s)
 
-#     DTX[:full_month], DTX[:full_day]].map{|t| t.to_s}.join(DTX[:dash].to_s)}/
-  # TK later  DTX[:program_full_time] = %r{#{[DTX[:hour], DTX[:minute], DTX[:second]].join(DTX[:time_delim].to_s)}\s+#{DTX[:timezone]}}
 
     DATE_REGEXERS = Hashie::Mash.new({
-          programmatic_standard: {
-            regex: /#{DTX[:program_full_date]}/,
+          iso_standard: {
+            regex: /#{DTX[:iso_full_date]}/,
             value: 100,
-            desc: 'A timestamp following programmatic standard: YYYY-MM-DD'
+            desc: 'A timestamp following iso standard: YYYY-MM-DD'
           },
 
           us_standard_numeric: {
@@ -82,23 +75,51 @@ module HtmlTrawl
 =end
         })
 
-    TIME_REGEXERS = Hashie::Mash.new({
-          programmatic_standard: {
-            regex: DTX[:program_full_time],
-            value: 100,
-            desc: 'A timestamp following programmatic standard, with HH:MM::SS TZ'
-          }
 
+    DTX_TIME = {
+      hour: %r{(?<hour>\d{2})} ,
+      minute: %r{(?<minute>\d{2})},
+      second: %r{(?<second>\d{2})},
+      timezone: %r{(?<timezone>(?:\+|-)\d{4})},
+
+
+
+    }
+
+    DTX_HOUR = {
+      iso: /(?<iso_hour>(?:[01]\d|2[0-3]))/
+    }
+
+    DTX_MINUTE = {
+      iso: /(?<iso_minute>[0-5]\d)/
+    }
+
+    DTX_SECOND = {
+      iso: /(?<iso_second>[0-5]\d)/
+    }
+
+
+    DTX_TZ = {
+      iso: /(?<iso_timezone>(?:\+|-)\d{2}:?\d{2})/
+    }
+
+  # TK later  DTX[:iso_full_time] = %r{#{[DTX[:hour], DTX[:minute], DTX[:second]].join(DTX[:time_delim].to_s)}\s+#{DTX[:timezone]}}
+
+
+    TIME_REGEXERS = Hashie::Mash.new({
+          iso_standard: {
+            regex: /(?<hour>#{DTX_HOUR[:iso]}):(?<minute>#{DTX_MINUTE[:iso]}):(?<second>#{DTX_SECOND[:iso]})(?<timezone>#{DTX_TZ[:iso]})/,
+            value: 100,
+            desc: 'A timestamp following iso standard, with HH:MM:SS+TZ'
+          }
         })
 
-
-
-    def TimestampRegexMatcher.find_dates(org_str)
+    def TimestampRegexMatcher.find_regex_by_type(org_str, regex_array)
       # each match slices! the string, so we make a clone here
       # to avoid altering the original string
       str = org_str.clone 
 
-      all_found_matches = DATE_REGEXERS.inject([]){ |arr, (regex_name, regex_type_hsh)|
+      all_found_matches = regex_array.inject([]){ |arr, (regex_name, regex_type_hsh)|
         regex = regex_type_hsh[:regex]
         # get an array of MatchDatums
         this_regex_matches = str.to_enum(:scan, regex).map{ r = Regexp.last_match; [r, r.begin(0), r.end(0)]}
@@ -134,6 +155,15 @@ module HtmlTrawl
 
       return all_found_matches
     end
+
+    def TimestampRegexMatcher.find_dates(org_str)
+      TimestampRegexMatcher.find_regex_by_type(org_str, DATE_REGEXERS)
+    end
+
+    def TimestampRegexMatcher.find_times(org_str)
+      TimestampRegexMatcher.find_regex_by_type(org_str, TIME_REGEXERS)
+    end
+
 
 
   end

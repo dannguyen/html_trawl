@@ -10,7 +10,6 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
 
 
    context 'just dates' do
-      
       context 'functional' do 
          describe '#find_dates should return an array of all matches' do 
             it 'should return 1 if 1 found' do 
@@ -25,9 +24,9 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
             end
          end
       end
-      
+
       context 'numeric' do 
-         context 'programmatic date formats' do 
+         context 'iso date formats' do 
             it 'should find official timestamps in YYYY-MM-DD format' do 
                @str = '2013-07-25 11:41:40 -0400'
                @matches = TimestampRegexMatcher.find_dates(@str)
@@ -35,7 +34,7 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
                expect(@matches.count).to eq 1
 
                @mtch = @matches.first
-               expect(@mtch.regex_name).to eq :programmatic_standard
+               expect(@mtch.regex_name).to eq :iso_standard
                expect(@mtch.regex_value).to eq 100
                expect(@mtch[:year]).to eq '2013'
                expect(@mtch[:month]).to eq '07'
@@ -46,7 +45,7 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
                @str = '2013-06-30T22:56:31+00:00'
 
                @mtch = TimestampRegexMatcher.find_dates(@str).first
-               expect(@mtch.regex_name).to eq :programmatic_standard
+               expect(@mtch.regex_name).to eq :iso_standard
                expect(@mtch[:year]).to eq '2013'
                expect(@mtch[:month]).to eq '06'
                expect(@mtch[:day]).to eq '30'
@@ -58,7 +57,7 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
                @matches = TimestampRegexMatcher.find_dates(@str)
                @mtch = @matches.first 
 
-               expect(@mtch.regex_name).to eq :programmatic_standard
+               expect(@mtch.regex_name).to eq :iso_standard
                expect(@mtch[:year]).to eq '2009'
                expect(@mtch[:month]).to eq '06'
                expect(@mtch[:day]).to eq '12'
@@ -248,21 +247,38 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
          end
 
       end
-
    end # dates
 
+   context '::find_times' do 
+      context 'iso time formats' do 
+         it 'should find official timestamps in hh:mm:ss' do 
+            @str = '2013-07-05 11:41:40-04:00'
+            @matches = TimestampRegexMatcher.find_times(@str)
+            expect(@matches.count).to eq 1
+
+            @match = @matches.first
+            expect(@match.regex_name).to eq :iso_standard
+            expect(@match.hour).to eq '11'
+            expect(@match.minute).to eq '41'
+            expect(@match.second).to eq '40'
+            expect(@match.timezone).to eq '-04:00'
+         end
+
+      end
+   end
 
 
    context 'day and time' do 
-      context 'programmatic date formats', skip: true do 
+      context 'iso date formats', skip: true do 
          it 'should find official timestamps in YYYY-MM-DD format' do 
+# DEPRECATED
             @str = '2013-07-05 11:41:40 -0400'
             @matches = TimestampRegexMatcher.find_dates(@str)
 
             expect(@matches.count).to eq 1
 
             @mtch = @matches.first
-            expect(@mtch.regex_name).to eq :programmatic_standard
+            expect(@mtch.regex_name).to eq :iso_standard
             expect(@mtch.regex_value).to eq 100
             expect(@mtch.regex_begin).to eq 0
             expect(@mtch.regex_end).to eq @str.length
