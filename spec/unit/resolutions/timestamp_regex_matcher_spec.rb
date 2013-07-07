@@ -264,6 +264,22 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
             expect(@match.timezone).to eq '-04:00'
          end
 
+         it 'should match alternate timezone format, sans colon' do 
+            @str = '03:11:40+0200'
+            @match = TimestampRegexMatcher.find_times(@str).first
+            expect(@match.timezone).to eq '+0200'
+         end
+
+         context 'negatory' do 
+            it ':iso_standard should not match non iso format' do 
+               @str = '9:42:30+0200'
+               @match = TimestampRegexMatcher.find_times(@str).first
+               expect(@match).to be_nil
+            end
+         end
+
+
+
       end
    end
 
