@@ -4,7 +4,7 @@ module HtmlTrawl
    class TimestampRegexMatcher 
 
     FULL_MONTHS_REGEX = %r{(?:January|February|March|April|May|June|July|August|September|October|November|December)}i
-    ABBREV_MONTHS_REGEX = %r{(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?}i
+    ABBREV_MONTHS_REGEX = %r{(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?}i
 
     ALL_WRITTEN_MONTHS_REGEX = %r{#{FULL_MONTHS_REGEX}|#{ABBREV_MONTHS_REGEX}}
 
@@ -33,7 +33,8 @@ module HtmlTrawl
 
     DTX_DAY = {
       full_day: /\b(?<full_day>(?:3[0-1]|2\d|1\d|0[1-9]))\b/,            
-      human_day: /\b(?<human_day>(?:3[0-1]|2\d|1\d|0?[1-9]))\b/
+      human_day: /\b(?<human_day>(?:3[0-1]|2\d|1\d|0?[1-9]))\b/,
+      written_day: /\b(?<written_day>\d?(?:1(?:st)?|2(?:nd)?|3(?:rd)?|[4567890](?:th)?))/
     }
 
 
@@ -62,7 +63,7 @@ module HtmlTrawl
           },
 
           us_written: {
-            regex: /(?<month>#{DTX_MONTH[:human_written_month]})\s+(?<day>#{DTX_DAY[:human_day]})\s*,?\s*(?<year>#{DTX_YEAR[:written_year]})/,
+            regex: /(?<month>#{DTX_MONTH[:human_written_month]})\s+(?<day>#{DTX_DAY[:written_day]})\s*,?\s*(?<year>#{DTX_YEAR[:written_year]})/,
             value: 85,
             desc: 'Jan. 12 1991'
           },

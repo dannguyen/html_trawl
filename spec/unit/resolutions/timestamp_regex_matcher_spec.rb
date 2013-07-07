@@ -155,13 +155,29 @@ describe "TimestampRegexMatcher#find_matches", skip: false do
                   expect(@match.month).to eq 'Jan.'
                   expect(@match.day).to eq '17'
                end
+         
+               it 'should match January 17th 1985' do 
+                  @str = 'January 17th, 1985'
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.year).to eq '1985'
+                  expect(@match.month).to eq 'January'
+                  expect(@match.day).to eq '17th'
+               end
+
+               it 'should match May 1st 1985' do 
+                  @str = 'May 1st 1985'
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.day).to eq '1st'
+               end
 
 
-               
 
-               it 'should match Jan. 17th 1985'
-               it 'should match May 1st 1985'
-               it 'should match May 3rd, 1985'
+               it 'should match Sept. 30th, 1985' do 
+                  @str = 'Sept. 30th 1985'
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.day).to eq '30th'
+               end
+
             end
 
             context 'wordy', skip: true do 
