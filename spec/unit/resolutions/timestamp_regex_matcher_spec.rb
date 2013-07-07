@@ -274,13 +274,66 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
             it ':iso_standard should not match non iso format' do 
                @str = '9:42:30+0200'
                @match = TimestampRegexMatcher.find_times(@str).first
-               expect(@match).to be_nil
+               expect(@match.regex_name).not_to eq :iso_standard
             end
          end
+      end
 
+      context 'informal iso' do 
+         # note this may be deprecated
+         it 'should match 14:01' do 
+            @str = 'Jan. 16, 2012 14:01'
+            @match = TimestampRegexMatcher.find_times(@str).first
+            expect(@match.regex_name).to eq :iso_imprecise
+         end
+      end
 
+      context 'meridiem' do 
+         it 'should match 9:45 AM' do 
+            @str = 'Jan. 16, 2012 9:45 AM etc'
+            @match = TimestampRegexMatcher.find_times(@str).first
+            expect(@match.regex_name).to eq :meridiem
+            expect(@match.hour).to eq '9'
+            expect(@match.minute).to eq '45'
+            expect(@match.meridiem_suffix).to eq 'AM'            
+         end
+
+         it 'should match 12:01 p.m.' do 
+            @str = ' 12:01 p.m.'
+            @match = TimestampRegexMatcher.find_times(@str).first
+            expect(@match.hour).to eq '12'
+            expect(@match.minute).to eq '01'
+            expect(@match.meridiem_suffix).to eq 'p.m.'            
+         end
+
+         it 'should match 3:00am' do 
+            @str = ' 3:00am'
+            @match = TimestampRegexMatcher.find_times(@str).first
+            expect(@match.hour).to eq '3'
+            expect(@match.minute).to eq '00'
+            expect(@match.meridiem_suffix).to eq 'am'            
+         end
+
+         it 'should match 12:50P.M.' do 
+            @str = ' 12:59P.M.'
+            @match = TimestampRegexMatcher.find_times(@str).first
+            expect(@match.hour).to eq '12'
+            expect(@match.minute).to eq '59'
+            expect(@match.meridiem_suffix).to eq 'P.M.'            
+         end
+
+         it 'should match 09:01AM' do 
+            @str = ' 09:01AM '
+            @match = TimestampRegexMatcher.find_times(@str).first
+            expect(@match.hour).to eq '09'
+            expect(@match.minute).to eq '01'
+            expect(@match.meridiem_suffix).to eq 'AM'            
+         end
 
       end
+
+
+
    end
 
 

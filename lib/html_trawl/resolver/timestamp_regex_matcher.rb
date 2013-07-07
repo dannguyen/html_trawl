@@ -11,7 +11,8 @@ module HtmlTrawl
     DTX = {      
       month_abbrev: ABBREV_MONTHS_REGEX,
       month_full: FULL_MONTHS_REGEX,
-      dash: %r{-}  
+      dash: %r{-},
+      meridiem_suffix: /(?<meridiem_suffix>(?:[AP]\.?M\.?))/i
       }
 
     DTX_YEAR = {
@@ -87,7 +88,9 @@ module HtmlTrawl
     }
 
     DTX_HOUR = {
-      iso: /(?<iso_hour>(?:[01]\d|2[0-3]))/
+      iso: /(?<iso_hour>(?:[01]\d|2[0-3]))/,
+      unpadded_iso: /(?<unpadded_iso_hour>(?:[0-2]?\d))/,
+      meridiem: /(?<meridiem_hour>(?:1[0-2]|0?\d{1}))/
     }
 
     DTX_MINUTE = {
@@ -111,6 +114,18 @@ module HtmlTrawl
             regex: /(?<hour>#{DTX_HOUR[:iso]}):(?<minute>#{DTX_MINUTE[:iso]}):(?<second>#{DTX_SECOND[:iso]})(?<timezone>#{DTX_TZ[:iso]})/,
             value: 100,
             desc: 'A timestamp following iso standard, with HH:MM:SS+TZ'
+          },
+
+          iso_imprecise: {
+            regex: /(?<hour>#{DTX_HOUR[:unpadded_iso]}):(?<minute>#{DTX_MINUTE[:iso]})(?::(?<second>#{DTX_SECOND[:iso]}))?\s*(?:(?<timezone>#{DTX_TZ[:iso]}))?(?!\s*#{DTX[:meridiem_suffix]})/,
+            value: 85,
+            desc: "non-padded hour, seconds and/or timezone optional - 9:30...however, there's a negative lookahead for meridem suffixes"
+          }, 
+
+          meridiem: {
+            regex: /(?<hour>#{DTX_HOUR[:meridiem]}):(?<minute>#{DTX_MINUTE[:iso]})(?::(?<second>#{DTX_SECOND[:iso]}))?\s*(?:(?<timezone>#{DTX_TZ[:iso]}))?\s*(?=#{DTX[:meridiem_suffix]})/,
+            value: 80,
+            desc: 'A timestamp with meridiem time am/pm: 12:00 PM, seconds and timezone optional'            
           }
         })
 
