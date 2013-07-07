@@ -3,19 +3,12 @@ require 'hashie'
 module HtmlTrawl
    class TimestampRegexMatcher 
 
-    FULL_MONTHS_REGEX = %r{(?:January|February|March|April|May|June|July|August|September|October|November|December)\b}i
-    ABBREV_MONTHS_REGEX = %r{(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b}i
+    FULL_MONTHS_REGEX = %r{(?:January|February|March|April|May|June|July|August|September|October|November|December)}i
+    ABBREV_MONTHS_REGEX = %r{(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?}i
 
     ALL_WRITTEN_MONTHS_REGEX = %r{#{FULL_MONTHS_REGEX}|#{ABBREV_MONTHS_REGEX}}
 
-    DTX = {
-      full_year: /\b(?<full_year>\d{4})\b/,
-      full_month: /\b(?<full_month>(?:1[0-2]|0[1-9]))\b/,
-      full_day: /\b(?<full_day>(?:3[0-1]|2\d|1\d|0[1-9]))\b/,
-      human_year: /\b(?<human_year>\d{2,4})\b/,
-      human_numeral_month: /\b(?<human_numeral_month>(?:1[0-2]|0?[1-9]))\b/,
-      human_written_month: /\b?<human_written_month>(?:ALL_WRITTEN_MONTHS_REGEX)\b/,
-      human_day: /\b(?<human_day>(?:3[0-1]|2\d|1\d|0?[1-9]))\b/,
+    DTX = {      
       hour: %r{(?<hour>\d{2})} ,
       minute: %r{(?<minute>\d{2})},
       second: %r{(?<second>\d{2})},
@@ -26,28 +19,66 @@ module HtmlTrawl
       time_delim: %r{:},
     }
 
-    DTX_YEARS = 
+    DTX_YEAR = {
+      full_year: /\b(?<full_year>\d{4})\b/,
+      human_year: /\b(?<human_year>\d{2,4})\b/, 
+      written_year: /(?:(?<full_year>\d{4})|(?<abbrev_year>'\d{2}))\b/
+    }
+
+    DTX_MONTH = {
+      human_numeral_month: /\b(?<human_numeral_month>(?:1[0-2]|0?[1-9]))\b/,
+      human_written_month: /\b(?<human_written_month>#{ALL_WRITTEN_MONTHS_REGEX})/,
+      full_month: /\b(?<full_month>(?:1[0-2]|0[1-9]))\b/
+    }
+
+    DTX_DAY = {
+      full_day: /\b(?<full_day>(?:3[0-1]|2\d|1\d|0[1-9]))\b/,            
+      human_day: /\b(?<human_day>(?:3[0-1]|2\d|1\d|0?[1-9]))\b/
+    }
 
 
 
     DTX[:date_delim] = %r{(?:#{DTX[:dash]}|\.|\/)} # 3/12/2000, 3.12.2000, 3-12-2000
 
 
-    DTX[:program_full_date] = %r{#{[DTX[:full_year], DTX[:full_month], DTX[:full_day]].map{|t| t.to_s}.join(DTX[:dash].to_s)}}
+    DTX[:program_full_date] = [/(?<year>#{DTX_YEAR[:full_year]})/, 
+        /(?<month>#{DTX_MONTH[:full_month]})/,
+        /(?<day>#{DTX_DAY[:full_day]})/].join(DTX[:dash].to_s)
+
+#     DTX[:full_month], DTX[:full_day]].map{|t| t.to_s}.join(DTX[:dash].to_s)}/
   # TK later  DTX[:program_full_time] = %r{#{[DTX[:hour], DTX[:minute], DTX[:second]].join(DTX[:time_delim].to_s)}\s+#{DTX[:timezone]}}
 
     DATE_REGEXERS = Hashie::Mash.new({
           programmatic_standard: {
-            regex: DTX[:program_full_date],
+            regex: /#{DTX[:program_full_date]}/,
             value: 100,
             desc: 'A timestamp following programmatic standard: YYYY-MM-DD'
           },
 
           us_standard_numeric: {
-            regex: /#{DTX[:human_numeral_month]}#{DTX[:date_delim]}#{DTX[:human_day]}#{DTX[:date_delim]}#{DTX[:human_year]}/,
+            regex: /(?<month>#{DTX_MONTH[:human_numeral_month]})#{DTX[:date_delim]}(?<day>#{DTX_DAY[:human_day]})#{DTX[:date_delim]}(?<year>#{DTX_YEAR[:human_year]})/,
             value: 90,
             desc: 'M/D/YY'
+          },
+
+          us_written: {
+            regex: /(?<month>#{DTX_MONTH[:human_written_month]})\s+(?<day>#{DTX_DAY[:human_day]})\s*,?\s*(?<year>#{DTX_YEAR[:written_year]})/,
+            value: 85,
+            desc: 'Jan. 12 1991'
+          },
+
+=begin
+          europe_standard_numeric: {
+            regex: /#{DTX[:human_day]}#{DTX[:date_delim]}#{DTX[:human_numeral_month]}#{DTX[:date_delim]}#{DTX[:human_year]}/,
+            value: 85,
+            desc: 'Jan'
+          },
+
+
+          europe_written: {
+
           }
+=end
         })
 
     TIME_REGEXERS = Hashie::Mash.new({

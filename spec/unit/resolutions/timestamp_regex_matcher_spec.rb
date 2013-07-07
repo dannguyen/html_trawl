@@ -60,10 +60,11 @@ describe "TimestampRegexMatcher#find_matches", skip: false do
             it 'should detect MM/DD/YYYY' do 
                @str = %q{On 09/03/1975}
                @match = TimestampRegexMatcher.find_matches(@str).first
+               expect(@match.regex_name).to eq :us_standard_numeric
+
                expect(@match.year).to eq '1975'
                expect(@match.month).to eq '09'
                expect(@match.day).to eq '03'
-               expect(@match.regex_name).to eq :us_standard_numeric
             end
 
             it 'should detect MM-DD-YYYY' do 
@@ -108,8 +109,6 @@ describe "TimestampRegexMatcher#find_matches", skip: false do
                   expect(TimestampRegexMatcher.find_matches(@str)).to be_empty
                end
             end
-
-
          end
       end # numeric dates
 
@@ -117,16 +116,55 @@ describe "TimestampRegexMatcher#find_matches", skip: false do
 
          context 'English' do 
             context 'standard' do 
-               it 'should match January 2, 1985'
-               it 'should match January 12 1985'
-               it 'should match Jan. 7, 1985'
-               it 'should match Jan. 17, 1985'
+               it 'should match January 2, 1985' do 
+                  @str = 'January 2, 1985'
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.year).to eq '1985'
+                  expect(@match.month).to eq 'January'
+                  expect(@match.day).to eq '2'
+               end
+
+               it 'should match May 12 1985' do 
+                  @str = 'May 12 1985'
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.year).to eq '1985'
+                  expect(@match.month).to eq 'May'
+                  expect(@match.day).to eq '12'
+               end
+
+               it 'should match 2-digit abbreviated year: May 12, \'85' do 
+                  @str = "May 12, '85"
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.year).to eq "'85"
+                  expect(@match.month).to eq 'May'
+                  expect(@match.day).to eq '12'
+               end
+
+               it 'should match Jan. 7, 1985' do 
+                  @str = 'Jan. 7, 1985'
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.year).to eq '1985'
+                  expect(@match.month).to eq 'Jan.'
+                  expect(@match.day).to eq '7'
+               end
+
+               it 'should match Jan. 17, 1985' do 
+                  @str = 'Jan. 17, 1985'
+                  @match = TimestampRegexMatcher.find_matches(@str).first
+                  expect(@match.year).to eq '1985'
+                  expect(@match.month).to eq 'Jan.'
+                  expect(@match.day).to eq '17'
+               end
+
+
+               
+
                it 'should match Jan. 17th 1985'
                it 'should match May 1st 1985'
                it 'should match May 3rd, 1985'
             end
 
-            context 'wordy' do 
+            context 'wordy', skip: true do 
                it 'should match January second, 1984'
                it 'should match January Fourth, 1984'
                it 'should match January Fourth, 1984'
