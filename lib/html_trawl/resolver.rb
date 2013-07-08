@@ -3,13 +3,14 @@ require 'nokogiri'
 module HtmlTrawl
 	class Resolver
 
-		attr_reader :parsed_html
+		attr_reader :parsed_html, :raw_html
 
 		module ExportAsAttributes; end 
 		include self::ExportAsAttributes
 		# each class is responsible for implementing this
 
 		def initialize(htmlnode)
+         @raw_html = convert_nokogiri_to_html_text(htmlnode)
 			@parsed_html = parse_content(htmlnode)
 		end
 

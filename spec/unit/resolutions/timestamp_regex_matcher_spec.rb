@@ -329,15 +329,12 @@ describe "TimestampRegexMatcher#find_dates", skip: false do
             expect(@match.minute).to eq '01'
             expect(@match.meridiem_suffix).to eq 'AM'            
          end
-
       end
-
-
 
    end
 
 
-   context 'day and time' do 
+   context 'datetime pairs' do 
       context 'iso date formats', skip: true do 
          it 'should find official timestamps in YYYY-MM-DD format' do 
 # DEPRECATED

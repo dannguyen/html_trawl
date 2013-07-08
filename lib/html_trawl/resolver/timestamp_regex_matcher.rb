@@ -1,7 +1,7 @@
 require 'hashie'
 
 module HtmlTrawl
-   class TimestampRegexMatcher 
+   module TimestampRegexMatcher 
 
     FULL_MONTHS_REGEX = %r{(?:January|February|March|April|May|June|July|August|September|October|November|December)}i
     ABBREV_MONTHS_REGEX = %r{(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?}i
@@ -129,6 +129,8 @@ module HtmlTrawl
           }
         })
 
+
+
     def TimestampRegexMatcher.find_regex_by_type(org_str, regex_array)
       # each match slices! the string, so we make a clone here
       # to avoid altering the original string
@@ -152,6 +154,7 @@ module HtmlTrawl
 
           _m = mashie.regex_match #convenience variable
           mashie.string_match = _m.to_s
+          mashie.string_length = mashie.string_match.length
 
           # iterate through each named group, e.g. :year, :month, :day
           _m.names.each{ |name| mashie[name] = _m[name] }
@@ -159,7 +162,7 @@ module HtmlTrawl
 
           # modify the (cloned) receiver string, replace the match with a series of DTK so that
           # the date string isn't matched successive times by looser date standards
-          m_length = mashie.string_match.length # convenience
+          m_length = mashie.string_length # convenience
           str = str.sub(regex, ('DTK' * (m_length / 3.0).ceil)[0..(m_length-1)] )
 
           arr << mashie
